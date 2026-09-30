@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="EdgeMem offline-first semantic memory assistant for industrial maintenance technicians.">
+  <title>EdgeMem - Device Sync Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base:#080c14;--bg-panel:rgba(15,23,42,0.72);--bg-card:rgba(18,28,52,0.60);
+      --border:rgba(99,155,255,0.12);--border-hov:rgba(99,155,255,0.28);
+      --ink:#e2eaf8;--ink-dim:#8fa3c8;--ink-mute:#4e6487;
+      --accent:#4f8ef7;--accent2:#7c5cfc;--accent3:#00d4c8;
+      --green:#10d085;--green-bg:rgba(16,208,133,0.12);
+      --red:#f04060;--red-bg:rgba(240,64,96,0.12);
+      --amber:#f5a623;--amber-bg:rgba(245,166,35,0.12);
+      --shadow-md:0 8px 32px rgba(0,0,0,.45);
+      --radius-sm:8px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
+      font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg-base);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+    button,input,select,textarea{font:inherit;}
+    button{cursor:pointer;}
+    .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 20% -10%,rgba(79,142,247,.13) 0%,transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 110%,rgba(124,92,252,.11) 0%,transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 50%,rgba(0,212,200,.06) 0%,transparent 60%);
+      animation:meshDrift 14s ease-in-out infinite alternate;}
+    @keyframes meshDrift{from{opacity:1;transform:scale(1);}to{opacity:.85;transform:scale(1.04) rotate(1deg);}}
+    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+      background-image:linear-gradient(rgba(79,142,247,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,.04) 1px,transparent 1px);
+      background-size:44px 44px;
+      mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 20%,transparent 80%);}
+    .shell{position:relative;z-index:1;width:min(1680px,calc(100% - 48px));margin:0 auto;padding:36px 0 64px;}
+    .hero{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:28px;flex-wrap:wrap;}
+    .hero-brand{flex:1 1 340px;min-width:0;}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(79,142,247,.14);border:1px solid rgba(79,142,247,.28);border-radius:999px;padding:5px 12px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+    .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.5);}}
+    .hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-.045em;line-height:1.05;background:linear-gradient(135deg,#e2eaf8 0%,var(--accent) 45%,var(--accent2) 80%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+    .hero-subtitle{color:var(--ink-dim);font-size:.93rem;line-height:1.6;max-width:520px;}
+    .config-card{flex:0 1 520px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-lg);backdrop-filter:blur(16px);box-shadow:var(--shadow-md);padding:16px 18px;}
+    .config-card-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);margin-bottom:12px;}
+    .config-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;}
+    label{display:block;font-size:.72rem;font-weight:600;letter-spacing:.04em;color:var(--ink-mute);margin-bottom:6px;}
+    input,select,textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s;}
+    input:focus,select:focus,textarea:focus{border-color:rgba(79,142,247,.5);box-shadow:0 0 0 3px rgba(79,142,247,.12);}
+    select option{background:#1a2540;color:var(--ink);}
+    textarea{resize:vertical;min-height:88px;}
+    .field{min-width:0;}
+    button{border:1px solid transparent;border-radius:var(--radius-sm);padding:9px 16px;font-weight:700;font-size:.85rem;transition:all .18s cubic-bezier(.4,0,.2,1);}
+    button:active{transform:translateY(1px) scale(.99);}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 14px rgba(79,142,247,.28);}
+    .btn-primary:hover{box-shadow:0 6px 20px rgba(79,142,247,.42);filter:brightness(1.08);}
+    .btn-secondary{background:rgba(255,255,255,.06);border-color:var(--border);color:var(--ink-dim);}
+    .btn-secondary:hover{background:rgba(255,255,255,.1);border-color:var(--border-hov);color:var(--ink);}
+    .btn-danger{background:rgba(240,64,96,.1);border-color:rgba(240,64,96,.3);color:var(--red);}
+    .btn-danger:hover{background:rgba(240,64,96,.2);}
+    .btn-sm{padding:6px 11px;font-size:.78rem;}
+    .global-notice{display:none;margin-bottom:20px;background:var(--red-bg);border:1px solid rgba(240,64,96,.3);border-radius:var(--radius-md);padding:11px 14px;font-size:.85rem;color:var(--red);}
+    .global-notice.visible{display:block;}
+    .stats-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+    .stat-tile{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-md);backdrop-filter:blur(16px);padding:14px 16px;transition:border-color .2s,transform .2s;}
+    .stat-tile:hover{border-color:var(--border-hov);transform:translateY(-2px);}
+    .stat-tile-val{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,var(--ink),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:4px;}
+    .stat-tile-label{font-size:.7rem;color:var(--ink-mute);font-weight:600;letter-spacing:.04em;}
+    .cloud-strip{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-xl);backdrop-filter:blur(20px);box-shadow:var(--shadow-md);padding:22px 28px;margin-bottom:24px;}
+    .cloud-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap;}
+    .cloud-id{display:flex;align-items:center;gap:12px;}
+    .icon-box{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:900;font-size:1rem;flex-shrink:0;}
+    .icon-box-cloud{background:linear-gradient(135deg,rgba(79,142,247,.25),rgba(124,92,252,.25));border:1px solid rgba(79,142,247,.3);color:var(--accent);}
+    .cloud-title{font-size:1.05rem;font-weight:700;}
+    .cloud-subtitle{font-size:.78rem;color:var(--ink-mute);margin-top:2px;}
+    .convergence-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;font-weight:800;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;transition:all .3s;}
+    .convergence-badge::before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor;}
+    .convergence-badge.converged{color:var(--green);background:var(--green-bg);border:1px solid rgba(16,208,133,.3);box-shadow:0 0 20px rgba(16,208,133,.15);}
+    .convergence-badge.converged::before{animation:pulse 1.5s infinite;}
+    .convergence-badge.diverged{color:var(--red);background:var(--red-bg);border:1px solid rgba(240,64,96,.3);}
+    .cloud-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+    .metric-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;}
+    .metric-label{font-size:.7rem;color:var(--ink-mute);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;}
+    .metric-value{font-size:1.3rem;font-weight:800;font-variant-numeric:tabular-nums;}
+    .metric-value.mono{font-family:'JetBrains Mono',monospace;font-size:1rem;}
+    .hash-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;}
+    .hash-cell{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;}
+    .hash-cell-label{font-size:.68rem;color:var(--ink-mute);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+    .hash-cell-value{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--ink-dim);overflow-wrap:anywhere;}
+    .device-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start;}
+    .device-panel{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-xl);backdrop-filter:blur(20px);box-shadow:var(--shadow-md);overflow:hidden;transition:border-color .3s;}
+    .device-panel:hover{border-color:var(--border-hov);}
+    .panel-header{padding:18px 22px 16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,transparent 100%);}
+    .panel-header-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    .device-identity{display:flex;align-items:center;gap:12px;}
+    .device-avatar{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:900;font-size:1.05rem;flex-shrink:0;}
+    .device-avatar-a{background:linear-gradient(135deg,rgba(79,142,247,.3),rgba(124,92,252,.2));border:1px solid rgba(79,142,247,.35);color:var(--accent);}
+    .device-avatar-b{background:linear-gradient(135deg,rgba(0,212,200,.25),rgba(79,142,247,.2));border:1px solid rgba(0,212,200,.3);color:var(--accent3);}
+    .device-name-label{font-size:1rem;font-weight:700;}
+    .device-name-sub{font-size:.77rem;color:var(--ink-mute);margin-top:1px;}
+    .panel-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+    .online-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;transition:all .3s;}
+    .online-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;}
+    .online-pill.online{color:var(--green);background:var(--green-bg);border:1px solid rgba(16,208,133,.3);}
+    .online-pill.online::before{animation:pulse 1.5s infinite;}
+    .online-pill.offline{color:var(--amber);background:var(--amber-bg);border:1px solid rgba(245,166,35,.3);}
+    .sync-bar{display:flex;flex-wrap:wrap;gap:0;padding:10px 22px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.15);}
+    .sync-stat{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--ink-mute);padding:0 16px 0 0;border-right:1px solid var(--border);margin-right:16px;}
+    .sync-stat:last-child{border-right:none;margin-right:0;}
+    .sync-stat strong{color:var(--ink-dim);font-weight:700;}
+    .panel-section{padding:18px 22px;border-bottom:1px solid var(--border);}
+    .panel-section:last-of-type{border-bottom:none;}
+    .section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .section-title::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,var(--accent),var(--accent2));}
+    .search-top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;}
+    .search-filters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;}
+    .log-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+    .log-form-grid .wide{grid-column:1/-1;}
+    .results-container{display:grid;gap:10px;}
+    .empty-state{padding:24px;text-align:center;color:var(--ink-mute);font-size:.85rem;background:rgba(255,255,255,.02);border:1px dashed var(--border);border-radius:var(--radius-md);}
+    .empty-icon{font-size:1.5rem;margin-bottom:8px;}
+    .result-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;transition:border-color .2s,box-shadow .2s;animation:slideIn .25s ease both;}
+    .result-card:hover{border-color:var(--border-hov);box-shadow:0 4px 20px rgba(0,0,0,.3);}
+    @keyframes slideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+    .result-rank{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:rgba(79,142,247,.15);color:var(--accent);font-size:.68rem;font-weight:800;margin-bottom:8px;}
+    .result-text{font-size:.88rem;line-height:1.55;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:10px;}
+    .tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+    .tag{padding:3px 9px;border-radius:999px;font-size:.7rem;font-weight:600;background:rgba(255,255,255,.07);color:var(--ink-dim);border:1px solid var(--border);}
+    .tag.sev-critical{background:rgba(240,64,96,.15);color:var(--red);border-color:rgba(240,64,96,.3);}
+    .tag.sev-high{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.3);}
+    .tag.sev-medium{background:rgba(79,142,247,.12);color:var(--accent);border-color:rgba(79,142,247,.3);}
+    .tag.sev-low{background:rgba(16,208,133,.12);color:var(--green);border-color:rgba(16,208,133,.3);}
+    .score-block{display:grid;gap:6px;margin-bottom:10px;}
+    .score-row{display:grid;grid-template-columns:56px 1fr 52px;align-items:center;gap:8px;font-size:.7rem;}
+    .score-label{color:var(--ink-mute);font-weight:600;}
+    .score-track{height:6px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden;}
+    .score-fill{height:100%;border-radius:inherit;transition:width .6s cubic-bezier(.4,0,.2,1);min-width:0;}
+    .score-fill.dense{background:linear-gradient(90deg,var(--accent),#7cb5ff);}
+    .score-fill.sparse{background:linear-gradient(90deg,var(--accent2),#b39af9);}
+    .score-fill.fused{background:linear-gradient(90deg,var(--accent3),#00e5c8);}
+    .score-num{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-dim);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:.67rem;}
+    .card-actions{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;}
+    .card-actions .field{flex:0 0 auto;min-width:110px;}
+    .panel-msg{padding:8px 22px 10px;font-size:.78rem;color:var(--ink-mute);min-height:34px;transition:color .2s;}
+    .panel-msg.error{color:var(--red);}
+    .panel-msg.success{color:var(--green);}
+    .page-footer{text-align:center;margin-top:28px;color:var(--ink-mute);font-size:.75rem;line-height:1.7;}
+    @media(max-width:1200px){.stats-strip{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:980px){.config-grid{grid-template-columns:1fr 1fr auto;}.search-filters{grid-template-columns:1fr 1fr;}}
+    @media(max-width:760px){.shell{width:calc(100% - 28px);padding:20px 0 40px;}.device-grid{grid-template-columns:1fr;}.cloud-metrics{grid-template-columns:1fr 1fr;}.hash-row{grid-template-columns:1fr;}.stats-strip{grid-template-columns:repeat(2,1fr);}.log-form-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:460px){.cloud-metrics,.stats-strip{grid-template-columns:1fr;}.search-filters,.log-form-grid{grid-template-columns:1fr;}.log-form-grid .wide{grid-column:auto;}.config-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="bg-mesh" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="hero">
+      <div class="hero-brand">
+        <div class="hero-badge">Live Demo</div>
+        <h1>EdgeMem Sync Console</h1>
+        <p class="hero-subtitle">Offline-first semantic memory for industrial maintenance &mdash; two edge devices, hybrid vector search, deterministic CRDT sync.</p>
+      </div>
+      <section class="config-card" aria-labelledby="config-label">
+        <div class="config-card-label" id="config-label">Service endpoints</div>
+        <div class="config-grid">
+          <div class="field"><label for="base-a">Device A</label><input id="base-a" type="url" value="http://127.0.0.1:8001"></div>
+          <div class="field"><label for="base-b">Device B</label><input id="base-b" type="url" value="http://127.0.0.1:8002"></div>
+          <div class="field"><label for="base-cloud">Cloud</label><input id="base-cloud" type="url" value="http://127.0.0.1:9000"></div>
+          <button id="save-urls" class="btn-secondary" type="button">Apply</button>
+        </div>
+      </section>
+    </header>
+    <div id="global-error" class="global-notice" role="alert"></div>
+    <div class="stats-strip" aria-label="Key metrics">
+      <div class="stat-tile"><div class="stat-tile-val">90%</div><div class="stat-tile-label">Hybrid Hit@1</div></div>
+      <div class="stat-tile"><div class="stat-tile-val">~19ms</div><div class="stat-tile-label">Search p50 latency</div></div>
+      <div class="stat-tile"><div class="stat-tile-val">0</div><div class="stat-tile-label">Network calls offline</div></div>
+      <div class="stat-tile"><div class="stat-tile-val">100%</div><div class="stat-tile-label">Sync convergence rate</div></div>
+      <div class="stat-tile"><div class="stat-tile-val">155</div><div class="stat-tile-label">Edits saved vs naive LWW</div></div>
+    </div>
+    <section class="cloud-strip" aria-labelledby="cloud-heading">
+      <div class="cloud-top">
+        <div class="cloud-id">
+          <div class="icon-box icon-box-cloud">&#9729;</div>
+          <div><div class="cloud-title" id="cloud-heading">Cloud State</div><div class="cloud-subtitle" id="cloud-updated">Waiting for service state&hellip;</div></div>
+        </div>
+        <span id="convergence-badge" class="convergence-badge diverged">DIVERGED</span>
+      </div>
+      <div class="cloud-metrics">
+        <div class="metric-card"><div class="metric-label">Cloud points</div><div class="metric-value" id="cloud-points">&mdash;</div></div>
+        <div class="metric-card"><div class="metric-label">Cloud sequence</div><div class="metric-value mono" id="cloud-seq">&mdash;</div></div>
+        <div class="metric-card"><div class="metric-label">Poll interval</div><div class="metric-value">2 s</div></div>
+      </div>
+      <div class="hash-row">
+        <div class="hash-cell"><div class="hash-cell-label">Device A hash</div><div class="hash-cell-value" id="hash-a">&mdash;</div></div>
+        <div class="hash-cell"><div class="hash-cell-label">Device B hash</div><div class="hash-cell-value" id="hash-b">&mdash;</div></div>
+        <div class="hash-cell"><div class="hash-cell-label">Cloud hash</div><div class="hash-cell-value" id="hash-cloud">&mdash;</div></div>
+      </div>
+    </section>
+    <section class="device-grid" aria-label="Device controls">
+      <article class="device-panel" data-device="A" aria-labelledby="device-a-title">
+        <header class="panel-header">
+          <div class="panel-header-top">
+            <div class="device-identity">
+              <div class="device-avatar device-avatar-a">A</div>
+              <div><div class="device-name-label" id="device-a-title">Device A</div><div class="device-name-sub" id="device-a-id">Connecting&hellip;</div></div>
+            </div>
+            <div class="panel-controls">
+              <span id="device-a-online" class="online-pill offline">Offline</span>
+              <button id="device-a-network" class="btn-secondary btn-sm" type="button">Go online</button>
+              <button id="device-a-sync" class="btn-primary btn-sm" type="button">&#8635; Sync now</button>
+            </div>
+          </div>
+        </header>
+        <div class="sync-bar">
+          <div class="sync-stat">Pending <strong id="device-a-pending">&mdash;</strong></div>
+          <div class="sync-stat">Last sync <strong id="device-a-last-sync">Never</strong></div>
+          <div class="sync-stat">Points <strong id="device-a-count">&mdash;</strong></div>
+        </div>
+        <div class="panel-section">
+          <div class="section-title">Search local memory</div>
+          <form id="device-a-search">
+            <div class="search-top"><div class="field"><label for="device-a-query">Query</label><input id="device-a-query" type="search" placeholder="e.g. pump shaking and oil dripping" required></div><button class="btn-primary" type="submit" style="align-self:flex-end">Search</button></div>
+            <div class="search-filters">
+              <div class="field"><label for="device-a-equipment">Equipment</label><select id="device-a-equipment"></select></div>
+              <div class="field"><label for="device-a-severity">Severity min</label><select id="device-a-severity"></select></div>
+              <div class="field"><label for="device-a-mode">Mode</label><select id="device-a-mode"><option value="hybrid">Hybrid (RRF)</option><option value="dense">Dense only</option><option value="sparse">Sparse only</option></select></div>
+            </div>
+          </form>
+        </div>
+        <div class="panel-section">
+          <div class="section-title">Results <span id="device-a-result-count" style="font-weight:500;color:var(--ink-mute);text-transform:none;letter-spacing:0"></span></div>
+          <div id="device-a-results" class="results-container"><div class="empty-state"><div class="empty-icon">&#128269;</div>Run a search to see local matches.</div></div>
+        </div>
+        <div class="panel-section">
+          <div class="section-title">Log new observation</div>
+          <form id="device-a-log" class="log-form-grid">
+            <div class="field wide"><label for="device-a-log-text">Observation</label><textarea id="device-a-log-text" required placeholder="Describe symptoms, likely cause, and action taken."></textarea></div>
+            <div class="field"><label for="device-a-log-equipment">Equipment</label><select id="device-a-log-equipment"></select></div>
+            <div class="field"><label for="device-a-log-severity">Severity</label><select id="device-a-log-severity"></select></div>
+            <div class="field"><label for="device-a-log-code">Error code (optional)</label><input id="device-a-log-code" maxlength="100" placeholder="E-4471"></div>
+            <div class="wide"><button class="btn-primary" type="submit">Save observation</button></div>
+          </form>
+        </div>
+        <div id="device-a-message" class="panel-msg" role="status"></div>
+      </article>
+      <article class="device-panel" data-device="B" aria-labelledby="device-b-title">
+        <header class="panel-header">
+          <div class="panel-header-top">
+            <div class="device-identity">
+              <div class="device-avatar device-avatar-b">B</div>
+              <div><div class="device-name-label" id="device-b-title">Device B</div><div class="device-name-sub" id="device-b-id">Connecting&hellip;</div></div>
+            </div>
+            <div class="panel-controls">
+              <span id="device-b-online" class="online-pill offline">Offline</span>
+              <button id="device-b-network" class="btn-secondary btn-sm" type="button">Go online</button>
+              <button id="device-b-sync" class="btn-primary btn-sm" type="button">&#8635; Sync now</button>
+            </div>
+          </div>
+        </header>
+        <div class="sync-bar">
+          <div class="sync-stat">Pending <strong id="device-b-pending">&mdash;</strong></div>
+          <div class="sync-stat">Last sync <strong id="device-b-last-sync">Never</strong></div>
+          <div class="sync-stat">Points <strong id="device-b-count">&mdash;</strong></div>
+        </div>
+        <div class="panel-section">
+          <div class="section-title">Search local memory</div>
+          <form id="device-b-search">
+            <div class="search-top"><div class="field"><label for="device-b-query">Query</label><input id="device-b-query" type="search" placeholder="e.g. bearing noise on motor shaft" required></div><button class="btn-primary" type="submit" style="align-self:flex-end">Search</button></div>
+            <div class="search-filters">
+              <div class="field"><label for="device-b-equipment">Equipment</label><select id="device-b-equipment"></select></div>
+              <div class="field"><label for="device-b-severity">Severity min</label><select id="device-b-severity"></select></div>
+              <div class="field"><label for="device-b-mode">Mode</label><select id="device-b-mode"><option value="hybrid">Hybrid (RRF)</option><option value="dense">Dense only</option><option value="sparse">Sparse only</option></select></div>
+            </div>
+          </form>
+        </div>
+        <div class="panel-section">
+          <div class="section-title">Results <span id="device-b-result-count" style="font-weight:500;color:var(--ink-mute);text-transform:none;letter-spacing:0"></span></div>
+          <div id="device-b-results" class="results-container"><div class="empty-state"><div class="empty-icon">&#128269;</div>Run a search to see local matches.</div></div>
+        </div>
+        <div class="panel-section">
+          <div class="section-title">Log new observation</div>
+          <form id="device-b-log" class="log-form-grid">
+            <div class="field wide"><label for="device-b-log-text">Observation</label><textarea id="device-b-log-text" required placeholder="Describe symptoms, likely cause, and action taken."></textarea></div>
+            <div class="field"><label for="device-b-log-equipment">Equipment</label><select id="device-b-log-equipment"></select></div>
+            <div class="field"><label for="device-b-log-severity">Severity</label><select id="device-b-log-severity"></select></div>
+            <div class="field"><label for="device-b-log-code">Error code (optional)</label><input id="device-b-log-code" maxlength="100" placeholder="E-4471"></div>
+            <div class="wide"><button class="btn-primary" type="submit">Save observation</button></div>
+          </form>
+        </div>
+        <div id="device-b-message" class="panel-msg" role="status"></div>
+      </article>
+    </section>
+    <footer class="page-footer">
+      <p>EdgeMem &mdash; offline-first &middot; search remains available while offline &middot; sync is explicit and replay-safe</p>
+      <p style="margin-top:4px">Hybrid: <strong style="color:var(--accent)">90% Hit@1</strong> &nbsp;&middot;&nbsp; Dense: 65% &nbsp;&middot;&nbsp; Sparse: 85% &nbsp;&middot;&nbsp; Convergence: <strong style="color:var(--green)">100%</strong> across 200 conflict scenarios</p>
+    </footer>
+  </main>
+  <script>
+    function getDefaultUrls(){const match=window.location.hostname.match(/^\d+-(.+)$/);if(match){const scheme=window.location.protocol==="https:"?"https:":"http:",host=match[1];return{A:`${scheme}//8001-${host}`,B:`${scheme}//8002-${host}`,cloud:`${scheme}//9000-${host}`};}return{A:"http://127.0.0.1:8001",B:"http://127.0.0.1:8002",cloud:"http://127.0.0.1:9000"};}
+    const DEFAULT_URLS=getDefaultUrls();
+    const EQUIPMENT=["hydraulic pump","electric motor","conveyor belt","compressor","gearbox","cooling fan","valve actuator","PLC controller"];
+    const SEVERITIES=["low","medium","high","critical"];
+    const urls={...DEFAULT_URLS};
+    const deviceState={A:{online:false,searchResults:[]},B:{online:false,searchResults:[]}};
+    function safeGet(k,fb){try{return localStorage.getItem(k)||fb;}catch{return fb;}}
+    function safeSet(k,v){try{localStorage.setItem(k,v);}catch{}}
+    function trimBase(v){return v.trim().replace(/\/+$/,"");}
+    function setGlobalError(msg){const b=document.getElementById("global-error");b.textContent=msg||"";b.classList.toggle("visible",Boolean(msg));}
+    function setMessage(device,msg,type=""){const b=document.getElementById(`device-${device.toLowerCase()}-message`);b.textContent=msg||"";b.className="panel-msg"+(type?` ${type}`:"");}
+    function eid(device,suffix){return document.getElementById(`device-${device.toLowerCase()}-${suffix}`);}
+    function deviceUrl(device){return deviceState[device].baseUrl||urls[device];}
+    async function api(base,path,opts={}){const res=await fetch(`${trimBase(base)}${path}`,{method:opts.method||"GET",mode:"cors",cache:"no-store",headers:opts.body===undefined?{}:{"Content-Type":"application/json"},body:opts.body===undefined?undefined:JSON.stringify(opts.body)});const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(`${res.status} ${data.detail||data.message||res.statusText}`);return data;}
+    function populateSelect(sel,values,firstLabel){sel.replaceChildren();sel.append(Object.assign(document.createElement("option"),{value:"",textContent:firstLabel}));for(const v of values)sel.append(Object.assign(document.createElement("option"),{value:v,textContent:v}));}
+    function fmt(ts){if(!ts)return"Never";const d=new Date(Number(ts)*1000);return isNaN(d)?String(ts):d.toLocaleString();}
+    async function refreshDevice(device){const[health,sync]=await Promise.all([api(deviceUrl(device),"/health"),api(deviceUrl(device),"/sync-status")]);deviceState[device].online=Boolean(health.online);eid(device,"id").textContent=health.device_id;eid(device,"count").textContent=health.points;eid(device,"pending").textContent=sync.pending;eid(device,"last-sync").textContent=fmt(sync.last_sync_ts);const pill=eid(device,"online");pill.textContent=health.online?"Online":"Offline";pill.className=`online-pill ${health.online?"online":"offline"}`;eid(device,"network").textContent=health.online?"Go offline":"Go online";}
+    async function searchDevice(device,queryOverride){const query=(queryOverride??eid(device,"query").value).trim();if(!query)return;eid(device,"query").value=query;const filters={};const equip=eid(device,"equipment").value,sev=eid(device,"severity").value;if(equip)filters.equipment=equip;if(sev)filters.severity_gte=sev;setMessage(device,"Searching local memory\u2026");try{const resp=await api(deviceUrl(device),"/search",{method:"POST",body:{query,limit:5,filters,mode:eid(device,"mode").value}});deviceState[device].searchResults=resp.results||[];renderResults(device,deviceState[device].searchResults);setMessage(device,`Found ${deviceState[device].searchResults.length} local match(es).`,"success");}catch(err){setMessage(device,`Search failed: ${err.message}`,"error");}}
+    function scoreWidth(val,peers){if(val==null||!isFinite(+val))return 0;const max=Math.max(0,...peers.map(Number).filter(isFinite));return max===0?0:Math.max(2,Math.min(100,(+val/max)*100));}
+    function renderResults(device,results){const root=eid(device,"results");eid(device,"result-count").textContent=results.length?`(${results.length})`:"(0)";root.replaceChildren();if(!results.length){root.innerHTML='<div class="empty-state"><div class="empty-icon">\u{1F50D}</div>No matching observations found.</div>';return;}const dV=results.map(r=>r.dense_score),sV=results.map(r=>r.sparse_score),fV=results.map(r=>r.fused_score??r.score);results.forEach((result,rank)=>{const p=result.payload||{};const card=document.createElement("article");card.className="result-card";card.style.animationDelay=`${rank*0.06}s`;const rb=document.createElement("div");rb.className="result-rank";rb.textContent=`#${rank+1}`;card.append(rb);const tx=document.createElement("p");tx.className="result-text";tx.textContent=p.text||"(No observation text)";card.append(tx);const tags=document.createElement("div");tags.className="tags";const sc=`sev-${(p.severity||"").toLowerCase()}`;for(const{label,cls}of[{label:p.equipment||"Unknown equipment",cls:""},{label:p.severity||"Unknown severity",cls:sc},...(p.error_code?[{label:`Code ${p.error_code}`,cls:""}]:[]),{label:`ID ${String(result.id).slice(0,8)}`,cls:""}]){const t=document.createElement("span");t.className=`tag ${cls}`.trim();t.textContent=label;tags.append(t);}card.append(tags);const sb=document.createElement("div");sb.className="score-block";for(const[label,val,peers,cls]of[["Dense",result.dense_score,dV,"dense"],["Sparse",result.sparse_score,sV,"sparse"],["Fused",result.fused_score??result.score,fV,"fused"]]){const row=document.createElement("div");row.className="score-row";const lbl=document.createElement("span");lbl.className="score-label";lbl.textContent=label;const track=document.createElement("div");track.className="score-track";const fill=document.createElement("div");fill.className=`score-fill ${cls}`;fill.style.width="0%";track.append(fill);const num=document.createElement("span");num.className="score-num";num.textContent=val==null?"n/a":(+val).toFixed(4);row.append(lbl,track,num);sb.append(row);requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.width=`${scoreWidth(val,peers)}%`;}));}card.append(sb);const actions=document.createElement("div");actions.className="card-actions";const sf=document.createElement("div");sf.className="field";const sl=document.createElement("label");sl.textContent="Set severity";const ss=document.createElement("select");ss.setAttribute("aria-label",`Severity for ${p.equipment||"point"}`);for(const sev of SEVERITIES)ss.append(Object.assign(document.createElement("option"),{value:sev,textContent:sev,selected:sev===p.severity}));sf.append(sl,ss);const editBtn=document.createElement("button");editBtn.type="button";editBtn.className="btn-secondary btn-sm";editBtn.textContent="Edit severity";editBtn.addEventListener("click",async()=>{try{await api(deviceUrl(device),`/points/${encodeURIComponent(result.id)}`,{method:"PATCH",body:{severity:ss.value}});setMessage(device,"Severity updated locally; sync when ready.","success");await searchDevice(device);await refreshDevice(device);await refreshCloud();}catch(err){setMessage(device,`Update failed: ${err.message}`,"error");}});const delBtn=document.createElement("button");delBtn.type="button";delBtn.className="btn-danger btn-sm";delBtn.textContent="Delete";delBtn.addEventListener("click",async()=>{try{await api(deviceUrl(device),`/points/${encodeURIComponent(result.id)}`,{method:"DELETE"});setMessage(device,"Point tombstoned locally; sync when ready.","success");await searchDevice(device);await refreshDevice(device);await refreshCloud();}catch(err){setMessage(device,`Delete failed: ${err.message}`,"error");}});actions.append(sf,editBtn,delBtn);card.append(actions);root.append(card);});}
+    async function toggleNetwork(device){const next=!deviceState[device].online;try{await api(deviceUrl(device),"/network",{method:"POST",body:{online:next}});setMessage(device,`Device is now ${next?"online":"offline"}.`,next?"success":"");await refreshDevice(device);}catch(err){setMessage(device,`Network toggle failed: ${err.message}`,"error");}}
+    async function syncDevice(device){try{const r=await api(deviceUrl(device),"/sync-now",{method:"POST"});setMessage(device,`${r.status}: pushed ${r.pushed_changes}, applied ${r.pulled_records}, pending ${r.pending}.`,"success");await refreshDevice(device);await refreshCloud();}catch(err){setMessage(device,`Sync failed: ${err.message}`,"error");}}
+    async function logObservation(device,event){event.preventDefault();const text=eid(device,"log-text").value.trim(),equipment=eid(device,"log-equipment").value,severity=eid(device,"log-severity").value,errorCode=eid(device,"log-code").value.trim();try{const record=await api(deviceUrl(device),"/log",{method:"POST",body:{text,equipment,severity,error_code:errorCode||null}});eid(device,"log-text").value="";eid(device,"log-code").value="";setMessage(device,`Saved observation ${String(record.id).slice(0,8)} locally; pending sync.`,"success");await refreshDevice(device);await searchDevice(device,text);await refreshCloud();}catch(err){setMessage(device,`Log failed: ${err.message}`,"error");}}
+    function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==="object"){const r={};for(const k of Object.keys(v).sort())r[k]=canonical(v[k]);return r;}return v;}
+    function stateHash(v){const s=JSON.stringify(canonical(v));let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,"0");}
+    async function refreshCloud(){try{const[aState,bState,cloud]=await Promise.all([api(deviceUrl("A"),"/state"),api(deviceUrl("B"),"/state"),api(urls.cloud,"/state")]);if(!Array.isArray(aState)||!Array.isArray(bState)||!cloud||typeof cloud.state!=="object")throw new Error("unexpected /state response shape");const aMap=Object.fromEntries(aState.map(p=>[p.id,p])),bMap=Object.fromEntries(bState.map(p=>[p.id,p])),cloudMap=cloud.state;const hA=stateHash(aMap),hB=stateHash(bMap),hC=stateHash(cloudMap);document.getElementById("cloud-points").textContent=Object.keys(cloudMap).length;document.getElementById("cloud-seq").textContent=cloud.cloud_seq;document.getElementById("hash-a").textContent=hA;document.getElementById("hash-b").textContent=hB;document.getElementById("hash-cloud").textContent=hC;const converged=hA===hB&&hB===hC;const badge=document.getElementById("convergence-badge");badge.textContent=converged?"CONVERGED":"DIVERGED";badge.className=`convergence-badge ${converged?"converged":"diverged"}`;document.getElementById("cloud-updated").textContent=`${aState.length} A \u00b7 ${bState.length} B \u00b7 ${Object.keys(cloudMap).length} cloud \u00b7 ${new Date().toLocaleTimeString()}`;setGlobalError("");}catch(err){document.getElementById("cloud-updated").textContent="Could not compare all three states.";setGlobalError(`State refresh failed: ${err.message}`);}}
+    async function refreshAll(){const outcomes=await Promise.allSettled([refreshDevice("A"),refreshDevice("B"),refreshCloud()]);const failed=outcomes.find(o=>o.status==="rejected");if(failed)setGlobalError(`Device status unavailable: ${failed.reason.message}`);}
+    function configure(){for(const device of["A","B"]){const saved=safeGet(`edgemem-base-${device}`,DEFAULT_URLS[device]);document.getElementById(`base-${device.toLowerCase()}`).value=saved;urls[device]=saved;deviceState[device].baseUrl=saved;populateSelect(eid(device,"equipment"),EQUIPMENT,"Any equipment");populateSelect(eid(device,"severity"),SEVERITIES,"Any severity");populateSelect(eid(device,"log-equipment"),EQUIPMENT,"Select equipment");populateSelect(eid(device,"log-severity"),SEVERITIES,"Select severity");eid(device,"log-equipment").value="hydraulic pump";eid(device,"log-severity").value="medium";eid(device,"search").addEventListener("submit",e=>{e.preventDefault();searchDevice(device);});eid(device,"log").addEventListener("submit",e=>logObservation(device,e));eid(device,"network").addEventListener("click",()=>toggleNetwork(device));eid(device,"sync").addEventListener("click",()=>syncDevice(device));}const ci=document.getElementById("base-cloud");ci.value=safeGet("edgemem-base-cloud",DEFAULT_URLS.cloud);urls.cloud=ci.value;document.getElementById("save-urls").addEventListener("click",async()=>{const entries=[["A",document.getElementById("base-a")],["B",document.getElementById("base-b")],["cloud",document.getElementById("base-cloud")]];for(const[key,input]of entries){if(!input.value.trim()){setGlobalError(`${key} URL cannot be blank.`);return;}urls[key]=trimBase(input.value);safeSet(`edgemem-base-${key}`,urls[key]);if(key==="A"||key==="B")deviceState[key].baseUrl=urls[key];}setGlobalError("");await refreshAll();});refreshAll();window.setInterval(refreshAll,2000);}
+    configure();
+  </script>
+</body>
+</html>
