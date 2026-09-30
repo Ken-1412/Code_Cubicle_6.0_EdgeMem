@@ -1,0 +1,177 @@
+{
+  "timestamp": 1790729211.3881903,
+  "hardware": {
+    "cpu_model": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "core_count": 16,
+    "total_ram_gb": 15.82,
+    "os": "Windows 11 (10.0.26200)",
+    "python_version": "3.13.3",
+    "platform_node_type": "laptop/desktop workstation"
+  },
+  "retrieval_quality": {
+    "dense": {
+      "semantic": {
+        "count": 8,
+        "hit@1": 4,
+        "hit@1_pct": 50.0,
+        "hit@3": 6,
+        "hit@3_pct": 75.0,
+        "mrr": 0.6042
+      },
+      "exact-code": {
+        "count": 8,
+        "hit@1": 5,
+        "hit@1_pct": 62.5,
+        "hit@3": 6,
+        "hit@3_pct": 75.0,
+        "mrr": 0.6875
+      },
+      "filtered": {
+        "count": 4,
+        "hit@1": 4,
+        "hit@1_pct": 100.0,
+        "hit@3": 4,
+        "hit@3_pct": 100.0,
+        "mrr": 1.0
+      },
+      "overall": {
+        "count": 20,
+        "hit@1": 13,
+        "hit@1_pct": 65.0,
+        "hit@3": 16,
+        "hit@3_pct": 80.0,
+        "mrr": 0.7167
+      }
+    },
+    "sparse": {
+      "semantic": {
+        "count": 8,
+        "hit@1": 5,
+        "hit@1_pct": 62.5,
+        "hit@3": 8,
+        "hit@3_pct": 100.0,
+        "mrr": 0.7708
+      },
+      "exact-code": {
+        "count": 8,
+        "hit@1": 8,
+        "hit@1_pct": 100.0,
+        "hit@3": 8,
+        "hit@3_pct": 100.0,
+        "mrr": 1.0
+      },
+      "filtered": {
+        "count": 4,
+        "hit@1": 4,
+        "hit@1_pct": 100.0,
+        "hit@3": 4,
+        "hit@3_pct": 100.0,
+        "mrr": 1.0
+      },
+      "overall": {
+        "count": 20,
+        "hit@1": 17,
+        "hit@1_pct": 85.0,
+        "hit@3": 20,
+        "hit@3_pct": 100.0,
+        "mrr": 0.9083
+      }
+    },
+    "hybrid": {
+      "semantic": {
+        "count": 8,
+        "hit@1": 6,
+        "hit@1_pct": 75.0,
+        "hit@3": 8,
+        "hit@3_pct": 100.0,
+        "mrr": 0.8542
+      },
+      "exact-code": {
+        "count": 8,
+        "hit@1": 8,
+        "hit@1_pct": 100.0,
+        "hit@3": 8,
+        "hit@3_pct": 100.0,
+        "mrr": 1.0
+      },
+      "filtered": {
+        "count": 4,
+        "hit@1": 4,
+        "hit@1_pct": 100.0,
+        "hit@3": 4,
+        "hit@3_pct": 100.0,
+        "mrr": 1.0
+      },
+      "overall": {
+        "count": 20,
+        "hit@1": 18,
+        "hit@1_pct": 90.0,
+        "hit@3": 20,
+        "hit@3_pct": 100.0,
+        "mrr": 0.9417
+      }
+    }
+  },
+  "latency": {
+    "cold_search_ms": 15.86,
+    "warm_search_p50_ms": 18.57,
+    "warm_search_p95_ms": 22.54,
+    "warm_search_p99_ms": 26.16,
+    "query_count_tested": 500,
+    "log_and_embed_write_ms": 19.13,
+    "instant_searchable": true
+  },
+  "footprint": {
+    "rss_memory_mb": 480.6,
+    "disk_size_mb": 0.58,
+    "quantization_status": "unsupported in local Qdrant (unquantized float vectors)"
+  },
+  "scale": [
+    {
+      "record_count": 120,
+      "ingest_time_s": 2.2,
+      "ingest_pts_sec": 54.5,
+      "disk_size_mb": 0.56,
+      "search_p50_ms": 17.07,
+      "search_p95_ms": 19.18
+    },
+    {
+      "record_count": 1000,
+      "ingest_time_s": 21.87,
+      "ingest_pts_sec": 45.7,
+      "disk_size_mb": 4.53,
+      "search_p50_ms": 69.94,
+      "search_p95_ms": 76.01
+    },
+    {
+      "record_count": 10000,
+      "ingest_time_s": 229.86,
+      "ingest_pts_sec": 43.5,
+      "disk_size_mb": 45.13,
+      "search_p50_ms": 629.11,
+      "search_p95_ms": 741.79
+    }
+  ],
+  "offline_proof": {
+    "hf_hub_offline": "1",
+    "network_calls_attempted": 0,
+    "blocked_addresses": [],
+    "verified": true
+  },
+  "sync_correctness": {
+    "scenarios_tested": 200,
+    "converged_scenarios": 200,
+    "convergence_rate": 100.0,
+    "lost_edits": 0,
+    "duplicate_count": 0,
+    "raw_deltas_generated": 800,
+    "compacted_deltas_sent": 600,
+    "bandwidth_saved_pct": 25.0
+  },
+  "baseline_comparison": {
+    "scenarios_tested": 200,
+    "naive_lww_lost_edits": 155,
+    "per_field_lww_lost_edits": 0,
+    "edits_saved_by_per_field": 155
+  }
+}
