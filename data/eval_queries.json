@@ -1,0 +1,204 @@
+[
+  {
+    "query": "vibrating pump leaking fluid around outlet",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "12fbde66-44ea-5294-a44e-28ac1930e31c"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "electric drive growls and loses speed under load",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "0228adb8-1e3d-5698-ab5c-23c8719b9544"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "belt keeps walking sideways and shedding rubber",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "f513a764-574b-5559-a004-4ffcb5cfb633"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "air pressure will not stay stored and the unit keeps cycling",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "239866cf-d195-522a-a30a-9be9eb0afb6d"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "grinding noise with a loose gearbox output shaft",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "6616df5e-c9ad-5573-97cd-719e90dee853"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "weak air circulation causes enclosure overheating",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "0513a2a1-4eb8-5186-96fc-0e07a5650c60"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "control valve responds late and stops before full travel",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "dc26ac2f-37a3-5eb5-bbfd-7e05179f6c1c"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "intermittent false PLC input trip",
+    "type": "SEMANTIC",
+    "expected_ids": [
+      "5b8c96d3-2677-5d01-869f-753c68c6a326"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "HYD-2000",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "12fbde66-44ea-5294-a44e-28ac1930e31c"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "VLV-8000",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "dc26ac2f-37a3-5eb5-bbfd-7e05179f6c1c"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "MOT-3003",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "21a3cf26-acd8-5ad2-8873-6c6cefa01171"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "CVB-4004",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "0a600034-5b34-5e1a-b5ec-d4b7f40e64e4"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "CMP-5004",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "d8764a6f-041c-59b6-a5df-0bce1512f2fe"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "GBX-6005",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "a6c48701-6249-5585-baa6-54930df9b361"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "FAN-7005",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "7ec45cc7-58bd-5fdf-b96d-a7a77cb98da5"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "PLC-F13",
+    "type": "EXACT-CODE",
+    "expected_ids": [
+      "a7959154-56b3-5880-9be2-b992fd79970b"
+    ],
+    "filters": {}
+  },
+  {
+    "query": "compressor cannot maintain receiver pressure",
+    "type": "FILTERED",
+    "expected_ids": [
+      "239866cf-d195-522a-a30a-9be9eb0afb6d",
+      "f9e04b8f-0520-5ee6-ade8-447c7f1e380b",
+      "492f3899-84d3-5446-b29d-381754109632",
+      "2cde972a-c353-5118-9215-ec64808084b7",
+      "3d1eeea9-cb1d-5be2-8117-78b3f0d2a3aa",
+      "d8764a6f-041c-59b6-a5df-0bce1512f2fe",
+      "eb8e044a-b93c-5361-a69d-0318a9939b13"
+    ],
+    "filters": {
+      "equipment": "compressor",
+      "severity_gte": "high"
+    }
+  },
+  {
+    "query": "hydraulic pump loses prime under load",
+    "type": "FILTERED",
+    "expected_ids": [
+      "12fbde66-44ea-5294-a44e-28ac1930e31c",
+      "29d94cb6-1c18-53cf-abc8-689c5f50ec56",
+      "2f2a7a5b-dbd8-573c-9636-6931f136db17",
+      "f3cd5c0a-c16c-5e78-b841-50bc2731acda",
+      "aaf404e8-e6d8-545d-a195-6f1b39849aa0",
+      "d60f9ce0-c02f-501a-bf25-20d4dfa2185a",
+      "21ae7c53-a25c-5c0e-b541-9603372352e4",
+      "a31c0551-d053-59ee-9fd0-76afa264e0dc",
+      "a2467178-62e9-5376-b1bd-d2356da5c3b6"
+    ],
+    "filters": {
+      "equipment": "hydraulic pump",
+      "severity_gte": "high"
+    }
+  },
+  {
+    "query": "motor overload during production",
+    "type": "FILTERED",
+    "expected_ids": [
+      "0228adb8-1e3d-5698-ab5c-23c8719b9544",
+      "ef85d988-83a7-5251-8fd2-89e7e1c87343",
+      "3f945e40-1d81-51c4-b2ed-857cc661bec2",
+      "1b57ef8a-28ba-5152-8d40-79582a3285ed",
+      "9c7833a2-35b4-5181-aff8-df5c96c60546",
+      "af01deb6-af7a-5a9b-b6c3-700eecb64da8",
+      "ba1dfb25-d5a4-53ae-89c3-b49cc796a1df",
+      "953a5b61-cd5c-5198-a66e-7416eb82ffba"
+    ],
+    "filters": {
+      "equipment": "electric motor",
+      "severity_gte": "high"
+    }
+  },
+  {
+    "query": "PLC input faults at high severity",
+    "type": "FILTERED",
+    "expected_ids": [
+      "5b8c96d3-2677-5d01-869f-753c68c6a326",
+      "fe580e57-5697-5e6e-9c96-1fa916913136",
+      "be718852-1a2e-59bd-8858-663e34084de5",
+      "573cc541-3d97-5ae8-b92c-917b1cb5e16f",
+      "e61051b6-06b5-5ba4-8933-9f45dd976a9b",
+      "357ef507-1b8a-574a-b7b4-4d79ce62a8bc",
+      "641f7b64-667d-561c-b592-976ed7aa7de8",
+      "a98ab828-2434-5493-aa12-22ded15337ae",
+      "adf1820a-5e50-5291-b7ba-1bc093754d22",
+      "f9f039da-c823-5f66-869f-1d3c3f3b06c9"
+    ],
+    "filters": {
+      "equipment": "PLC controller",
+      "severity_gte": "high"
+    }
+  }
+]
