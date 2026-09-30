@@ -1,0 +1,6 @@
+pytest==9.1.1
+fastembed==0.8.1
+qdrant-client==1.19.1
+fastapi==0.141.1
+uvicorn==0.52.1
+httpx==0.28.1
